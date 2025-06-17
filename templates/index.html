@@ -1,0 +1,87 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI Calculator</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'index' %}">BMI Calculator</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'index' %}">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="tipsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Tips
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end animate-fade" aria-labelledby="tipsDropdown">
+                            <li><a class="dropdown-item" href="{% url 'underweight_tips' %}">Underweight Tips</a></li>
+                            <li><a class="dropdown-item" href="{% url 'overweight_tips' %}">Overweight Tips</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- BMI Calculator Form -->
+    <div class="container mt-5">
+        <h1 class="text-center">BMI Calculator</h1>
+        <p class="text-center">Enter your height and weight to calculate your BMI.</p>
+
+        <div class="card p-4 shadow">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary w-100">Calculate BMI</button>
+            </form>
+
+            {% if bmi %}
+                <p class="text-center mt-3 fw-bold">Your BMI is {{ bmi }} - {{ category }}</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    {% if random_tip %}
+        <div class="modal fade" id="tipModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content p-3">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Health Tip</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>{{ random_tip }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        setTimeout(() => {
+            let tipModal = new bootstrap.Modal(document.getElementById("tipModal"));
+            tipModal.show();
+        }, Math.floor(Math.random() * 7000) + 3000); // Random timing between 3-10 sec
+    });
+        </script>
+{% endif %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
